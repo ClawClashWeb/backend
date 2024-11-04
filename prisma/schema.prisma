@@ -24,10 +24,12 @@ model User {
 
 model gameRecord {
   id        String   @id @default(uuid())
+  versus    String   @default("야옹이")
   win       Boolean  @default(true)
   kill      String   @default("0")
   death     String   @default("0")
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [nickname], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId    String
   nickname  String
 }

@@ -22,3 +22,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 README.md
+
+# Environment variables
+.env
+
+# Prisma migrations
+prisma/migrations/
+
+# Sessions
+sessions/
+
+# Rest Client
+http/
+
+# Logs
+*.log

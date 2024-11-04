@@ -1,10 +1,12 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import asyncHandler from "./AsyncHandler.js";
-
+import cors from "cors";
 const prisma = new PrismaClient();
 const app = express();
+
 app.use(express.json());
+app.use(cors());
 
 app.get("/user", async (req, res) => {
   const users = await prisma.user.findMany();
@@ -70,6 +72,27 @@ app.post(
   })
 );
 
+app.post(
+  "/:userId/verify",
+  asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { userpassword } = req.body;
+
+    const post = await prisma.user.findUnique({
+      where: { userId },
+      select: {
+        userpassword: true,
+      },
+    });
+    console.log(post.userpassword);
+    console.log(userpassword);
+    if (post.userpassword === userpassword) {
+      return res.status(200).json({ message: "비밀번호가 확인되었습니다" });
+    } else {
+      return res.status(401).json({ message: "비밀번호가 틀렸습니다" });
+    }
+  })
+);
 app.delete(
   "/user/:userId",
   asyncHandler(async (req, res) => {

@@ -28,6 +28,6 @@ model gameRecord {
   kill      String   @default("0")
   death     String   @default("0")
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [nickname], references: [id])
+  user      User     @relation(fields: [nickname], references: [id], onDelete: Cascade)
   nickname  String
 }

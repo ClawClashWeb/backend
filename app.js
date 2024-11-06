@@ -2,6 +2,9 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import asyncHandler from "./AsyncHandler.js";
 import cors from "cors";
+import * as dotenv from "dotenv";
+dotenv.config();
+
 const prisma = new PrismaClient();
 const app = express();
 
@@ -106,4 +109,4 @@ app.delete(
   })
 );
 
-app.listen(5000, () => console.log("Server Started"));
+app.listen(process.env.PORT || 5000, () => console.log("Server Started"));

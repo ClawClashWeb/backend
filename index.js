@@ -93,7 +93,7 @@ app.post(
     console.log(post.userpassword);
     console.log(userpassword);
     if (post.userpassword === userpassword) {
-      return res.status(200).json({ message: "비밀번호가 확인되었습니다" });
+      return res.status(200).json({ success: true });
     } else {
       return res.status(401).json({ message: "비밀번호가 틀렸습니다" });
     }

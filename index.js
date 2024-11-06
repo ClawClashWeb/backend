@@ -10,6 +10,9 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.get("/", (req, res) => {
+  res.send("hello");
+});
 
 app.get("/user", async (req, res) => {
   const users = await prisma.user.findMany();

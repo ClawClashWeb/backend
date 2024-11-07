@@ -48,7 +48,7 @@ app.post(
   "/:userId/gameRecord",
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    const { versus, win, kill, death } = req.body;
+    const { versus, win, myTeam, redScore, blueScore } = req.body;
     const user = await prisma.user.findUnique({
       where: { userId },
     });
@@ -59,9 +59,10 @@ app.post(
     const data = {
       userId,
       versus,
+      myTeam,
       win,
-      kill,
-      death,
+      redScore,
+      blueScore,
       nickname,
     };
     console.log(data);
@@ -90,7 +91,7 @@ app.post(
         userpassword: true,
       },
     });
-    console.log(post.userpassword);
+    console.log(typeof post.userpassword);
     console.log(userpassword);
     if (post.userpassword === userpassword) {
       return res.status(200).json({ success: true });

@@ -70,7 +70,7 @@ app.post(
       const record = await prisma.gameRecord.create({
         data: data,
       });
-      res.status(201).send(record);
+      res.status(201).send({ success: true });
     } else {
       return res
         .status(400)

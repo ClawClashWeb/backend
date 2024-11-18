@@ -19,21 +19,40 @@ app.get("/user", async (req, res) => {
   res.send(users);
 });
 
-app.get("/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const users = await prisma.user.findUniqueOrThrow({
-    where: { userId },
-    include: { gamerecords: true },
-  });
-  res.send(users);
-});
-
 app.get("/:userId/gameRecord", async (req, res) => {
   const { userId } = req.params;
-  const users = await prisma.gameRecord.findMany({
+  const gameCount = await prisma.gameRecord.count();
+  const { nickname } = await prisma.user.findUnique({
+    where: { userId },
+    select: {
+      nickname: true,
+    },
+  });
+  const win = await prisma.gameRecord.count({
+    where: { win: "win" },
+  });
+  const draw = await prisma.gameRecord.count({
+    where: { win: "draw" },
+  });
+  const lose = await prisma.gameRecord.count({
+    where: { win: "lose" },
+  });
+  const records = await prisma.gameRecord.findMany({
+    orderBy: { createdAt: "desc" },
     where: { userId },
   });
-  res.send(users);
+  const userinfo = {
+    gameCount: gameCount,
+    nickname: nickname,
+    winCount: win,
+    drawCount: draw,
+    loseCount: lose,
+  };
+  const data = {
+    records,
+    userinfo,
+  };
+  res.send(data);
 });
 
 app.post(
@@ -52,10 +71,6 @@ app.post(
     const user = await prisma.user.findUnique({
       where: { userId },
     });
-    const { nickname } = await prisma.user.findUnique({
-      where: { userId },
-      select: { nickname: true },
-    });
     const data = {
       userId,
       versus,
@@ -63,7 +78,6 @@ app.post(
       win,
       redScore,
       blueScore,
-      nickname,
     };
     console.log(data);
     if (user) {

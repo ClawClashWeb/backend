@@ -32,5 +32,4 @@ model gameRecord {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId    String
-  nickname  String
 }

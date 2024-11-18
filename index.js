@@ -21,7 +21,11 @@ app.get("/user", async (req, res) => {
 
 app.get("/:userId/gameRecord", async (req, res) => {
   const { userId } = req.params;
-  const gameCount = await prisma.gameRecord.count();
+  const gameCount = await prisma.gameRecord.count({
+    where: {
+      userId: userId,
+    },
+  });
   const { nickname } = await prisma.user.findUnique({
     where: { userId },
     select: {
@@ -29,13 +33,22 @@ app.get("/:userId/gameRecord", async (req, res) => {
     },
   });
   const win = await prisma.gameRecord.count({
-    where: { win: "win" },
+    where: {
+      userId: userId,
+      win: "win",
+    },
   });
   const draw = await prisma.gameRecord.count({
-    where: { win: "draw" },
+    where: {
+      userId: userId,
+      win: "draw",
+    },
   });
   const lose = await prisma.gameRecord.count({
-    where: { win: "lose" },
+    where: {
+      userId: userId,
+      win: "lose",
+    },
   });
   const records = await prisma.gameRecord.findMany({
     orderBy: { createdAt: "desc" },

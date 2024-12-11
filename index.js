@@ -5,6 +5,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import gameRecordRouter from "./routers/gameRecordRouter.js";
 import userRouter from "./routers/userRouter.js";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -31,7 +32,8 @@ app.post(
         userpassword: true,
       },
     });
-    if (post.userpassword === userpassword) {
+    const match = await bcrypt.compare(userpassword, post.userpassword);
+    if (match) {
       return res.status(200).json({ success: true });
     } else {
       return res.status(401).json({ message: "비밀번호가 틀렸습니다" });

@@ -3,7 +3,7 @@ import asyncHandler from "../AsyncHandler.js";
 import { assert } from "superstruct";
 import { createUser } from "../struct.js";
 import { PrismaClient } from "@prisma/client";
-
+import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 const userRouter = express.Router();
 
@@ -16,12 +16,25 @@ userRouter.route("/")
 .post(
   asyncHandler(async (req, res) => {
     assert(req.body, createUser);
-    const user = await prisma.user.create({ data: req.body });
+    const { userId, nickname } = req.body;
+    let userpassword = req.body.userpassword;
+    // hashing
+    const saltRound =10;
+    const salt = bcrypt.genSaltSync(saltRound); 
+    userpassword = await bcrypt.hash(userpassword, salt)
+    const data ={
+      userId : userId,
+      userpassword : userpassword,
+      nickname : nickname,
+      salt: salt,
+    }
+    const user = await prisma.user.create({ data: data });
     res.status(201).send({success : true});
   })
 )
 
-userRouter.route("/:userId").delete(
+userRouter.route("/:userId")
+.delete(
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
     const user = await prisma.user.delete({ where: { userId } });
